@@ -1,0 +1,39 @@
+<meta name=viewport content="width=device-width">
+<body style=margin:0><canvas id=a style="cursor:none;width:100%;height:100%"></canvas><script>
+a.ontouchstart=evt=>evt.preventDefault()
+c=a.getContext("2d",{alpha:false})
+T=Math;_=255<<24
+P={}
+onpointerdown=onpointermove=e=>P[e.pointerId]=e
+onpointerup=onpointerout=e=>delete P[e.pointerId]
+onresize=S=e=>{
+ I=innerWidth;J=innerHeight
+ W=H=480;I>J?H=W*J/I|0:W=H*I/J|0
+ a.width=W;a.height=H
+ B=new Uint8Array(W*H)
+ for(i=W*H/7|0;i--;)B[T.random()*W*H|0]=T.random()*255|0
+ o=c.createImageData(W,H);O=new Uint32Array(o.data.buffer)
+}
+S()
+m=(rr=W*W/128)*7
+L=t=>{
+ A=[]
+ for(K in P)A.push((e=P[K]).x*W/I,e.y*H/J)
+ N=A.length
+ for(y=0;y<H;y++)for(x=0;x<W;x++){
+  X=Y=f=0;g=1;p=y*W+x
+  for(j=0;j<N;j+=2){
+   Q=x-A[j];Z=y-A[j+1];d=Q*Q+Z*Z;s=m/d
+   if(d<rr/3)f=1
+   X+=Q*s;Y+=Z*s
+   g=T.max(g,(1+s)/T.abs(1-s))
+  }
+  if(f){O[p]=_;continue}
+  q=(x+X+t/50+9*W|0)%W;z=(y+Y+9*H|0)%H
+  O[p]=_|T.min(255,B[z*W+q]*g)*65793
+ }
+ c.putImageData(o,0,0)
+ requestAnimationFrame(L)
+}
+L()
+</script>
